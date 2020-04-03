@@ -44,7 +44,7 @@ const walmart = 'https://www.walmart.ca/en/ip/nintendo-switch-with-neon-blue-and
       // best buy
       await page.goto(bestbuy)
       let available = await page.$$eval('.addToCartButton', anchors => { return !anchors[0].hasAttribute('disabled'); });
-      if (available) {
+      if (!available) {
         send('Bestbuy');
       } else {
         console.log('Bestbuy out of stock at ' + getDate());
