@@ -14,12 +14,20 @@ const transport = nodemailer.createTransport({
   }
 });
 
-function send(text) {
+const bestbuy = 'https://www.bestbuy.ca/en-ca/product/nintendo-switch-console-with-neon-red-blue-joy-con/13817625';
+const walmart = 'https://www.walmart.ca/en/ip/nintendo-switch-with-neon-blue-and-neon-red-joycon-nintendo-switch/6000200280557';
+
+const stores = {
+  bestbuy: bestbuy,
+  walmart: walmart
+}
+
+function send(store) {
   const message = {
     from: 'imhangoo@yahoo.com', // Sender address
     to: '344375048@qq.com',         // List of recipients
-    subject: text + ': Nintendo Switch Available', // Subject line
-    text: text // Plain text body
+    subject: store + ': Nintendo Switch Available', // Subject line
+    text: stores[store] // Plain text body
   };
   transport.sendMail(message, function (err, info) {
     if (err) {
@@ -29,9 +37,6 @@ function send(text) {
     }
   });
 }
-
-const bestbuy = 'https://www.bestbuy.ca/en-ca/product/nintendo-switch-console-with-neon-red-blue-joy-con/13817625';
-const walmart = 'https://www.walmart.ca/en/ip/nintendo-switch-with-neon-blue-and-neon-red-joycon-nintendo-switch/6000200280557';
 
 (async () => {
   const browser = await puppeteer.launch()
@@ -44,8 +49,8 @@ const walmart = 'https://www.walmart.ca/en/ip/nintendo-switch-with-neon-blue-and
       // best buy
       await page.goto(bestbuy)
       let available = await page.$$eval('.addToCartButton', anchors => { return !anchors[0].hasAttribute('disabled'); });
-      if (!available) {
-        send('Bestbuy');
+      if (available) {
+        send('bestbuy');
       } else {
         console.log('Bestbuy out of stock at ' + getDate());
       }
@@ -54,8 +59,8 @@ const walmart = 'https://www.walmart.ca/en/ip/nintendo-switch-with-neon-blue-and
       await page.goto(walmart, { waitUntil: 'networkidle2' })
       const elementHandle = await page.$("button[data-automation='cta-button']");
       const text = await page.evaluate(el => el.textContent, elementHandle);
-      if (text !== 'Add to cart') {
-        send('Walmart');
+      if (text == 'Add to cart') {
+        send('walmart');
       } else {
         console.log('Walmart out of stock at ' + getDate());
       }
