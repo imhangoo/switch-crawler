@@ -49,7 +49,7 @@ function send(store) {
       // best buy
       await page.goto(bestbuy)
       let available = await page.$$eval('.addToCartButton', anchors => { return !anchors[0].hasAttribute('disabled'); });
-      if (available) {
+      if (!available) {
         send('bestbuy');
       } else {
         console.log('Bestbuy out of stock at ' + getDate());
