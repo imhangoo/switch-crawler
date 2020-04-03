@@ -44,7 +44,7 @@ const walmart = 'https://www.walmart.ca/en/ip/nintendo-switch-with-neon-blue-and
       // best buy
       await page.goto(bestbuy)
       let available = await page.$$eval('.addToCartButton', anchors => { return !anchors[0].hasAttribute('disabled'); });
-      if (available) {
+      if (!available) {
         send('Bestbuy');
       } else {
         console.log('Bestbuy out of stock at ' + getDate());
@@ -54,7 +54,7 @@ const walmart = 'https://www.walmart.ca/en/ip/nintendo-switch-with-neon-blue-and
       await page.goto(walmart, { waitUntil: 'networkidle2' })
       const elementHandle = await page.$("button[data-automation='cta-button']");
       const text = await page.evaluate(el => el.textContent, elementHandle);
-      if (text == 'Add to cart') {
+      if (text !== 'Add to cart') {
         send('Walmart');
       } else {
         console.log('Walmart out of stock at ' + getDate());
