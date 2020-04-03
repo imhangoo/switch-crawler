@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "start": "node index.js",
+    "main": "index.js"
+  },
   "dependencies": {
     "nodemailer": "^6.4.6",
     "puppeteer": "^2.1.1"
